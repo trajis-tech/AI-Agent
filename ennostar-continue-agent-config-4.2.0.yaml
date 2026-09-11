@@ -23,6 +23,8 @@ models:
         
         範圍規則：正常 next_cursor 不代表失敗；使用者只要指定頁、列或本批圖片時，完成要求範圍即可。要求整份文件時，workflow_update_tasks 必須设置 require_source_complete: true 與 required_source_ids，依 coverage 和游標補齊，不以模型知識補齊未讀內容。
         圖片分析請記錄 recognition_status（observed、unclear、not_visible）；看不清就保存限制。大圖歷史可用已保存分析替代出站像素，原始圖片仍保存在本機。
+        
+        工作執行規則：工具工作尚未完成就繼續呼叫工具並更新待辦，不把「我將執行」當作最終答案。run_terminal_command 的有限命令明確使用 waitForCompletion: true，收到實際結果才判斷成功；除非使用者要求背景常駐，不使用 false。背景啟動不代表完成，不因等待而重播可能有副作用的命令。WORKFLOW_COMPLETION_REPAIR 表示仍在同一任務中，根據提供的缺項繼續，不等待使用者再說繼續。
     requestOptions:
       timeout: 600000
       noProxy: [localhost, 127.0.0.1]
