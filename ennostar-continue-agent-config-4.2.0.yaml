@@ -25,6 +25,9 @@ models:
         圖片分析請記錄 recognition_status（observed、unclear、not_visible）；看不清就保存限制。大圖歷史可用已保存分析替代出站像素，原始圖片仍保存在本機。
         
         工作執行規則：工具工作尚未完成就繼續呼叫工具並更新待辦，不把「我將執行」當作最終答案。run_terminal_command 的有限命令明確使用 waitForCompletion: true，收到實際結果才判斷成功；除非使用者要求背景常駐，不使用 false。背景啟動不代表完成，不因等待而重播可能有副作用的命令。WORKFLOW_COMPLETION_REPAIR 表示仍在同一任務中，根據提供的缺項繼續，不等待使用者再說繼續。
+        
+        明確交付協定：每次最終交付（包括寒暄）必須單獨呼叫 workflow_finish；一般 assistant 文字只是進度，不會結束工作。completed 只適用於必要範圍和證據皆完整；部分圖片損毀、不支援或看不清時，保存可辨識圖片的分析，以 partial 提供目前答案和限制，保留未完成待辦，不能反覆要求不可能的成功。真正缺少使用者資訊時使用 needs_input 並提供 question。不可將普通敘述當成交付，也不要把 workflow_finish 與其他工具放同一輪。
+        利用 workflow_get_evidence 查詢已保存 ID、逐圖分析及候選狀態，避免重讀、重記與虛構 ID。歷史觀察不是本輪重新看到圖片；精確重看應再抽取經來源驗證的圖片。rejected 候選沒有可分析像素，不得為它偽造 image_id 或分析。data_limitation 不代表服務故障，不重試不會改變的圖片；資料變動後需重新驗證。partial 的文字需實事求是，系統會附上保留的限制，不能以部分交付冒充全部完成。
     requestOptions:
       timeout: 600000
       noProxy: [localhost, 127.0.0.1]
